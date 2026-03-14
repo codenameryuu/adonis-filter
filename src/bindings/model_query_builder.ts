@@ -7,18 +7,15 @@
  * file that was distributed with this source code.
  */
 
-import type { ModelQueryBuilder } from '@adonisjs/lucid/orm'
-import type { LucidFilterContract } from 'adonis-lucid-filter/types/filter'
+import type { ModelQueryBuilder } from "@adonisjs/lucid/orm";
+import type { LucidFilterContract } from "../types/filter.ts";
 
 /**
  * Define filter method to ModelQueryBuilder
  */
 export function extendModelQueryBuilder(builder: any) {
-  builder.macro(
-    'filter',
-    function (this: ModelQueryBuilder, input: any, filter?: LucidFilterContract) {
-      const Filter = filter || (this.model as any).$filter()
-      return new Filter(this, input).handle()
-    }
-  )
+  builder.macro("filter", function (this: ModelQueryBuilder, input: any, filter?: LucidFilterContract) {
+    const Filter = filter || (this.model as any).$filter();
+    return new Filter(this, input).handle();
+  });
 }

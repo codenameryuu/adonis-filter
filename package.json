@@ -1,17 +1,28 @@
 {
-  "name": "@codenameryuu/adonis-filter",
-  "description": "Addon for filtering AdonisJS Lucid ORM",
+  "name": "@codenameryuu/adonis-lucid-filter",
   "version": "1.0.0",
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "main": "./build/index.js",
-  "type": "module",
-  "files": [
-    "build",
-    "!build/bin",
-    "!build/tests"
+  "description": "Addon for filtering AdonisJS Lucid ORM",
+  "keywords": [
+    "adonisjs",
+    "adonisjs-filter",
+    "adonisjs-lucid",
+    "adonisjs-lucid-filter",
+    "adonis",
+    "adonis-lucid",
+    "adonis-filter",
+    "adonis-lucid-filter"
   ],
+  "homepage": "https://github.com/lookinlab/adonis-lucid-filter#readme",
+  "bugs": {
+    "url": "https://github.com/lookinlab/adonis-lucid-filter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lookinlab/adonis-lucid-filter.git"
+  },
+  "license": "MIT",
+  "author": "LookinGit",
+  "type": "module",
   "exports": {
     ".": "./build/index.js",
     "./commands": "./build/commands/main.js",
@@ -19,6 +30,16 @@
     "./bindings": "./build/src/bindings/model_query_builder.js",
     "./provider": "./build/providers/lucid_filter_provider.js"
   },
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "files": [
+    "build",
+    "!build/bin",
+    "!build/tests"
+  ],
   "scripts": {
     "lint": "eslint .",
     "clean": "del-cli build",
@@ -35,6 +56,9 @@
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "release": "np"
+  },
+  "dependencies": {
+    "type-fest": "^4.21.0"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.0.0",
@@ -66,42 +90,22 @@
     "typescript": "^5.5.3",
     "youch": "^4.1.0"
   },
-  "dependencies": {
-    "type-fest": "^4.21.0"
-  },
   "peerDependencies": {
     "@adonisjs/core": "^6.2.3",
     "@adonisjs/lucid": "^21.1.0",
     "lodash": "^4.17.21"
   },
-  "author": "LookinGit",
-  "license": "MIT",
-  "homepage": "https://github.com/lookinlab/adonis-lucid-filter#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/lookinlab/adonis-lucid-filter.git"
+  "engines": {
+    "node": ">=22.0.0"
   },
-  "bugs": {
-    "url": "https://github.com/lookinlab/adonis-lucid-filter/issues"
-  },
-  "keywords": [
-    "adonisjs",
-    "adonisjs-filter",
-    "adonisjs-lucid",
-    "adonisjs-lucid-filter",
-    "adonis",
-    "adonis-lucid",
-    "adonis-filter",
-    "adonis-lucid-filter"
-  ],
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
-  },
-  "prettier": "@adonisjs/prettier-config",
   "publishConfig": {
     "access": "public",
     "tag": "latest"
   },
+  "eslintConfig": {
+    "extends": "@adonisjs/eslint-config/package"
+  },
+  "prettier": "@adonisjs/prettier-config",
   "np": {
     "message": "chore(release): %s",
     "tag": "latest",
