@@ -1,6 +1,6 @@
 # Adonis Lucid Filter
 
-> Works with AdonisJS v7
+> Works with AdonisJS v6
 
 [![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
 
@@ -12,22 +12,22 @@ This addon adds the functionality to filter Lucid Models
 
 > **Note**: Check before install :point_down:
 
-| adonis-lucid-filter                 | @adonisjs/lucid     |
-|-------------------------------------|---------------------|
-| ^5.\*.*                             | ^20.\*.*            |
-| ^4.\*.*                             | <=18.\*.*           |
-| ^3.\*.* ( `@filterable()` decorator) | ^15.\*.*            |
-| ^2.\*.*                             | 14.\*.*             |
+| adonis-lucid-filter                  | @adonisjs/lucid |
+| ------------------------------------ | --------------- |
+| ^5.\*.\*                             | ^20.\*.\*       |
+| ^4.\*.\*                             | <=18.\*.\*      |
+| ^3.\*.\* (`@filterable()` decorator) | ^15.\*.\*       |
+| ^2.\*.\*                             | 14.\*.\*        |
 
-* Docs [for **Adonis v5**](https://github.com/lookinlab/adonis-lucid-filter/tree/v4)
-* Docs [for **Adonis v4**](https://github.com/lookinlab/adonis-lucid-filter/tree/v1)
-* Docs [for `@filterable()` decorator](https://github.com/lookinlab/adonis-lucid-filter/tree/v3)
+- Docs [for **Adonis v5**](https://github.com/lookinlab/adonis-lucid-filter/tree/v4)
+- Docs [for **Adonis v4**](https://github.com/lookinlab/adonis-lucid-filter/tree/v1)
+- Docs [for `@filterable()` decorator](https://github.com/lookinlab/adonis-lucid-filter/tree/v3)
 
 ## Introduction
 
 Example, we want to return a list of users filtered by multiple parameters. When we navigate to:
 
- `/users?name=Tony&lastName=&companyId=2&industry=5`
+`/users?name=Tony&lastName=&companyId=2&industry=5`
 
 `request.all()` or `request.qs()` will return:
 
@@ -49,7 +49,7 @@ import User from '#models/user'
 export default class UsersController {
   async index({ request }: HttpContext): Promise<User[]> {
     const { companyId, lastName, name, industry } = request.qs()
-  
+
     const query = User.query().where('company_id', +companyId)
 
     if (lastName) {
@@ -57,13 +57,11 @@ export default class UsersController {
     }
     if (name) {
       query.where(function () {
-        this.where('first_name', 'LIKE', `%${name}%`)
-          .orWhere('last_name', 'LIKE', `%${name}%`)
+        this.where('first_name', 'LIKE', `%${name}%`).orWhere('last_name', 'LIKE', `%${name}%`)
       })
     }
     return query.exec()
   }
-
 }
 ```
 
@@ -82,7 +80,7 @@ export default class UsersController {
 
 ## Installation
 
-Make sure to install it using `npm` , `yarn` or `pnpm` .
+Make sure to install it using `npm`, `yarn` or `pnpm`.
 
 ```bash
 # npm
@@ -95,7 +93,7 @@ yarn add adonis-lucid-filter
 pnpm add adonis-lucid-filter
 ```
 
-After install call `configure` :
+After install call `configure`:
 
 ```bash
 node ace configure adonis-lucid-filter
@@ -132,13 +130,13 @@ Where `user` is the Lucid Model you are creating the filter for. This will creat
 
 Define the filter logic based on the camel cased input key passed to the `filter()` method.
 
-* Empty strings are ignored
-* `setup()` will be called regardless of input
-* `_id` is dropped from the end of the input to define the method so filtering `user_id` would use the `user()` method
-* Input without a corresponding filter method are ignored
-* The value of the key is injected into the method
-* All values are accessible through the `this.$input` a property
-* All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
+- Empty strings are ignored
+- `setup()` will be called regardless of input
+- `_id` is dropped from the end of the input to define the method so filtering `user_id` would use the `user()` method
+- Input without a corresponding filter method are ignored
+- The value of the key is injected into the method
+- All values are accessible through the `this.$input` a property
+- All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
 
 To define methods for the following input:
 
@@ -159,7 +157,7 @@ import User from '#models/user'
 
 export default class UserFilter extends BaseModelFilter {
   declare $query: ModelQueryBuilderContract<typeof User>
-  
+
   static blacklist: string[] = ['secretMethod']
 
   // This will filter 'companyId', 'company_id' OR 'company'
@@ -169,9 +167,7 @@ export default class UserFilter extends BaseModelFilter {
 
   name(name: string) {
     this.$query.where((builder) => {
-      builder
-        .where('first_name', 'LIKE', `%${name}%`)
-        .orWhere('last_name', 'LIKE', `%${name}%`)
+      builder.where('first_name', 'LIKE', `%${name}%`).orWhere('last_name', 'LIKE', `%${name}%`)
     })
   }
 
@@ -214,11 +210,11 @@ In order to call this method it would need to be whitelisted dynamically:
 export default class UserFilter extends BaseModelFilter {
   // Blacklisted methods
   static blacklist: string[] = []
-  
+
   // Dropped `_id` from the end of the input
   // Doing this would allow you to have a `company()` filter method as well as a `companyId()` filter method.
   static dropId: boolean = true
-  
+
   // Doing this would allow you to have a mobile_phone() filter method instead of mobilePhone().
   // By default, mobilePhone() filter method can be called thanks to one of the following input key:
   // mobile_phone, mobilePhone, mobile_phone_id, mobilePhoneId
@@ -274,13 +270,13 @@ export default class UsersController {
   async index({ request, auth }: HttpContext): Promise<User[]> {
     const filter = auth.user.isAdmin() ? AdminFilter : UserFilter
     return User.filter(request.qs(), filter).exec()
-  } 
+  }
 }
 ```
 
 ### Filtering relations
 
-For filtering relations of model may be use `.query().filter()` or scope `filtration` , example:
+For filtering relations of model may be use `.query().filter()` or scope `filtration`, example:
 
 ```ts
 import type { HttpContext } from '@adonisjs/core/http'
@@ -293,9 +289,11 @@ export default class UserPostsController {
    */
   async index({ params, request }: HttpContext): Promise<Post[]> {
     const user: User = await User.findOrFail(params.user_id)
-    
-    return user.related('posts').query()
-      .apply(scopes => scopes.filtration(request.qs()))
+
+    return user
+      .related('posts')
+      .query()
+      .apply((scopes) => scopes.filtration(request.qs()))
       .exec()
 
     // or
@@ -311,9 +309,7 @@ Documentation by [Query Scopes](https://lucid.adonisjs.com/docs/model-query-scop
 
 [npm-image]: https://img.shields.io/npm/v/adonis-lucid-filter?logo=npm&style=for-the-badge
 [npm-url]: https://www.npmjs.com/package/adonis-lucid-filter
-
 [license-image]: https://img.shields.io/npm/l/adonis-lucid-filter?style=for-the-badge&color=blueviolet
 [license-url]: https://github.com/lookinlab/adonis-lucid-filter/blob/develop/LICENSE.md
-
 [typescript-image]: https://img.shields.io/npm/types/adonis-lucid-filter?color=294E80&label=%20&logo=typescript&style=for-the-badge
 [typescript-url]: https://github.com/lookinlab

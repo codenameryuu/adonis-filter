@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
 
-export const stubsRoot = dirname(fileURLToPath(import.meta.url));
+export const stubsRoot = dirname(fileURLToPath(import.meta.url))
