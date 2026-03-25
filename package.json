@@ -1,7 +1,7 @@
 {
   "name": "@codenameryuu/adonis-lucid-filter",
   "description": "Addon for filtering Adonis JS 7 Lucid ORM",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "author": "codenameryuu",
   "license": "MIT",
   "homepage": "https://github.com/codenameryuu/adonis-lucid-filter#readme",
@@ -26,21 +26,15 @@
     "./provider": "./build/providers/lucid_filter_provider.js"
   },
   "scripts": {
-    "lint": "eslint .",
-    "format": "prettier --write .",
     "clean": "del-cli build",
-    "precompile": "npm run lint && npm run clean",
-    "compile": "tsc --emitDeclarationOnly --declaration",
-    "build": "npm run compile",
-    "pretest": "npm run lint",
-    "test": "c8 npm run quick:test",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext=.ts",
+    "format": "prettier --write .",
+    "prebuild": "npm run lint && npm run clean",
+    "build": "npm run clean && tsc",
+    "release": "release-it",
     "version": "npm run build",
-    "prepublishOnly": "npm run build",
-    "release": "np",
-    "quick:test": "NODE_DEBUG=\"adonis-lucid-filter\" node --enable-source-maps --loader=ts-node/esm bin/test.ts",
-    "copy:stubs": "copyfiles \"stubs/**/**/*.stub\" --up=\"1\" build",
-    "index:commands": "adonis-kit index build/commands"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.7.0",
