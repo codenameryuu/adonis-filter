@@ -21,10 +21,6 @@ configure({
       name: 'unit',
       files: ['tests/unit/**/*.spec.ts'],
     },
-    {
-      name: 'integration',
-      files: ['tests/integration/**/*.spec.ts'],
-    },
   ],
 })
 

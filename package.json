@@ -1,7 +1,7 @@
 {
   "name": "@codenameryuu/adonis-lucid-filter",
   "description": "Addon for filtering Adonis JS 7 Lucid ORM",
-  "version": "2.5.0",
+  "version": "2.7.0",
   "author": "codenameryuu",
   "license": "MIT",
   "homepage": "https://github.com/codenameryuu/adonis-lucid-filter#readme",
@@ -12,7 +12,6 @@
   "engines": {
     "node": ">=24.0.0"
   },
-  "main": "./build/index.js",
   "type": "module",
   "files": [
     "build",
@@ -31,18 +30,17 @@
     "format": "prettier --write .",
     "clean": "del-cli build",
     "precompile": "npm run lint && npm run clean",
-    "postcompile": "npm run copy:stubs && npm run index:commands",
     "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
-    "copy:stubs": "copyfiles \"stubs/**/**/*.stub\" --up=\"1\" build",
-    "index:commands": "adonis-kit index build/commands",
-    "quick:test": "NODE_DEBUG=\"adonis-lucid-filter\" node --enable-source-maps --loader=ts-node/esm bin/test.ts",
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
     "typecheck": "tsc --noEmit",
     "version": "npm run build",
     "prepublishOnly": "npm run build",
-    "release": "np"
+    "release": "np",
+    "quick:test": "NODE_DEBUG=\"adonis-lucid-filter\" node --enable-source-maps --loader=ts-node/esm bin/test.ts",
+    "copy:stubs": "copyfiles \"stubs/**/**/*.stub\" --up=\"1\" build",
+    "index:commands": "adonis-kit index build/commands"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.7.0",
@@ -66,16 +64,14 @@
     "knex": "^3.1.0",
     "lodash": "^4.17.23",
     "luxon": "^3.4.4",
+    "np": "^11.0.2",
     "prettier": "^3.8.1",
     "reflect-metadata": "^0.2.2",
-    "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "tsup": "^8.1.0",
+    "type-fest": "^4.21.0",
     "typescript": "^5.5.3",
     "youch": "^4.1.0"
-  },
-  "dependencies": {
-    "type-fest": "^4.21.0"
   },
   "peerDependencies": {
     "@adonisjs/core": "^7.0.0",
@@ -91,9 +87,6 @@
     "adonis-filter",
     "adonis-lucid-filter"
   ],
-  "eslintConfig": {
-    "extends": "@adonisjs/eslint-config/package"
-  },
   "prettier": "@adonisjs/prettier-config",
   "publishConfig": {
     "access": "public",

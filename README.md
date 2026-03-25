@@ -1,12 +1,6 @@
 # @codenameryuu/adonis-lucid-filter
 
-> Works with Adonis JS V7
-
-[![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
-
-This addon adds the functionality to filter Lucid Models
-
-> Inspired by [EloquentFilter](https://github.com/Tucker-Eric/EloquentFilter)
+This addon adds the functionality to filter Lucid Models Adonis JS 7. Inspired by [EloquentFilter](https://github.com/Tucker-Eric/EloquentFilter)
 
 ## Introduction
 
@@ -27,7 +21,7 @@ Example, we want to return a list of users filtered by multiple parameters. When
 
 To filter by all those parameters we would need to do something like:
 
-```ts
+```typescript
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 
@@ -52,7 +46,7 @@ export default class UsersController {
 
 To filter that same input with Lucid Filters:
 
-```ts
+```typescript
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 
@@ -81,7 +75,7 @@ node ace configure @codenameryuu/adonis-lucid-filter
 
 * Register the provider and commands inside `adonisrc.ts` file.
 
-```ts
+```typescript
 providers: [
   // ...
   () => import('@codenameryuu/adonis-lucid-filter/provider'),
@@ -128,7 +122,7 @@ To define methods for the following input:
 
 You would use the following methods:
 
-```ts
+```typescript
 import { BaseModelFilter } from 'adonis-lucid-filter'
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import User from '#models/user'
@@ -168,7 +162,7 @@ The `whitelistMethod()` methods can be used to dynamically blacklist methods.
 
 Example:
 
-```ts
+```typescript
 setup($query) {
   this.whitelistMethod('secretMethod')
   this.$query.where('is_admin', true)
@@ -184,7 +178,7 @@ In order to call this method it would need to be whitelisted dynamically:
 
 #### Static properties
 
-```ts
+```typescript
 export default class UserFilter extends BaseModelFilter {
   // Blacklisted methods
   static blacklist: string[] = []
@@ -202,7 +196,7 @@ export default class UserFilter extends BaseModelFilter {
 
 ### Applying The Filter To A Model
 
-```ts
+```typescript
 import UserFilter from '#models/filters/user_filter'
 import { compose } from '@adonisjs/core/helpers'
 import { Filterable } from 'adonis-lucid-filter'
@@ -216,7 +210,7 @@ export default class User extends compose(BaseModel, Filterable) {
 
 This gives you access to the `filter()` method that accepts an object of input:
 
-```ts
+```typescript
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 
@@ -239,7 +233,7 @@ export default class UsersController {
 You can define the filter dynamically by passing the filter to use as the second parameter of the filter() method.
 Defining a filter dynamically will take precedent over any other filters defined for the model.
 
-```ts
+```typescript
 import type { HttpContext } from '@adonisjs/core/http'
 import AdminFilter from '#models/filters/admin_filter'
 import UserFilter from '#models/filters/user_filter'
@@ -256,7 +250,7 @@ export default class UsersController {
 
 For filtering relations of model may be use `.query().filter()` or scope `filtration` , example:
 
-```ts
+```typescript
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 
@@ -284,10 +278,3 @@ export default class UserPostsController {
 Documentation by [Query Scopes](https://lucid.adonisjs.com/docs/model-query-scopes)
 
 **Note:** The relation model must be `Filterable` and `$filter` must be defined in it
-
-[npm-image]: https://img.shields.io/npm/v/adonis-lucid-filter?logo=npm&style=for-the-badge
-[npm-url]: https://www.npmjs.com/package/adonis-lucid-filter
-[license-image]: https://img.shields.io/npm/l/adonis-lucid-filter?style=for-the-badge&color=blueviolet
-[license-url]: https://github.com/lookinlab/adonis-lucid-filter/blob/develop/LICENSE.md
-[typescript-image]: https://img.shields.io/npm/types/adonis-lucid-filter?color=294E80&label=%20&logo=typescript&style=for-the-badge
-[typescript-url]: https://github.com/lookinlab
