@@ -6,7 +6,7 @@ This addon adds the functionality to filter Lucid Models Adonis JS 7. Inspired b
 
 Example, we want to return a list of users filtered by multiple parameters. When we navigate to:
 
- `/users?name=Tony&lastName=&companyId=2&industry=5`
+`/users?name=Tony&lastName=&companyId=2&industry=5`
 
 `request.all()` or `request.qs()` will return:
 
@@ -59,13 +59,13 @@ export default class UsersController {
 
 ## Installation
 
-* Install the package
+- Install the package
 
 ```bash
 yarn add @codenameryuu/adonis-lucid-filter
 ```
 
-* Configure the package
+- Configure the package
 
 ```bash
 node ace configure @codenameryuu/adonis-lucid-filter
@@ -73,7 +73,7 @@ node ace configure @codenameryuu/adonis-lucid-filter
 
 ## Usage
 
-* Register the provider and commands inside `adonisrc.ts` file.
+- Register the provider and commands inside `adonisrc.ts` file.
 
 ```typescript
 providers: [
@@ -102,13 +102,13 @@ Where `user` is the Lucid Model you are creating the filter for. This will creat
 
 Define the filter logic based on the camel cased input key passed to the `filter()` method.
 
-* Empty strings are ignored
-* `setup()` will be called regardless of input
-* `_id` is dropped from the end of the input to define the method so filtering `user_id` would use the `user()` method
-* Input without a corresponding filter method are ignored
-* The value of the key is injected into the method
-* All values are accessible through the `this.$input` a property
-* All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
+- Empty strings are ignored
+- `setup()` will be called regardless of input
+- `_id` is dropped from the end of the input to define the method so filtering `user_id` would use the `user()` method
+- Input without a corresponding filter method are ignored
+- The value of the key is injected into the method
+- All values are accessible through the `this.$input` a property
+- All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
 
 To define methods for the following input:
 

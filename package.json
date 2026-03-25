@@ -1,7 +1,7 @@
 {
   "name": "@codenameryuu/adonis-lucid-filter",
   "description": "Addon for filtering Adonis JS 7 Lucid ORM",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "author": "codenameryuu",
   "license": "MIT",
   "homepage": "https://github.com/codenameryuu/adonis-lucid-filter#readme",
@@ -30,7 +30,7 @@
     "format": "prettier --write .",
     "clean": "del-cli build",
     "precompile": "npm run lint && npm run clean",
-    "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
+    "compile": "tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
     "pretest": "npm run lint",
     "test": "c8 npm run quick:test",
@@ -107,20 +107,5 @@
       "tests/**",
       "bin/**"
     ]
-  },
-  "tsup": {
-    "entry": [
-      "./index.ts",
-      "./src/types/*.ts",
-      "./src/bindings/model_query_builder.ts",
-      "./commands/make_filter.ts",
-      "./providers/lucid_filter_provider.ts"
-    ],
-    "outDir": "./build",
-    "clean": true,
-    "format": "esm",
-    "dts": false,
-    "sourcemap": true,
-    "target": "esnext"
   }
 }
