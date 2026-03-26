@@ -2,78 +2,26 @@
 
 This addon adds the functionality to filter Lucid Models Adonis JS 7. Inspired by [EloquentFilter](https://github.com/Tucker-Eric/EloquentFilter)
 
-## Introduction
+## Requirement
 
-Example, we want to return a list of users filtered by multiple parameters. When we navigate to:
-
-`/users?name=Tony&lastName=&companyId=2&industry=5`
-
-`request.all()` or `request.qs()` will return:
-
-```json
-{
-  "name": "Tony",
-  "lastName": "",
-  "companyId": 2,
-  "industry": 5
-}
-```
-
-To filter by all those parameters we would need to do something like:
-
-```typescript
-import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
-
-export default class UsersController {
-  async index({ request }: HttpContext): Promise<User[]> {
-    const { companyId, lastName, name, industry } = request.qs()
-
-    const query = User.query().where('company_id', +companyId)
-
-    if (lastName) {
-      query.where('last_name', 'LIKE', `%${lastName}%`)
-    }
-    if (name) {
-      query.where(function () {
-        this.where('first_name', 'LIKE', `%${name}%`).orWhere('last_name', 'LIKE', `%${name}%`)
-      })
-    }
-    return query.exec()
-  }
-}
-```
-
-To filter that same input with Lucid Filters:
-
-```typescript
-import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
-
-export default class UsersController {
-  async index({ request }: HttpContext): Promise<User[]> {
-    return User.filter(request.qs()).exec()
-  }
-}
-```
+* Adonis Js 7
+* Lucid 22 or higher
 
 ## Installation
 
-- Install the package
+* Install the package
 
 ```bash
 yarn add @codenameryuu/adonis-lucid-filter
 ```
 
-- Configure the package
+* Configure the package
 
 ```bash
 node ace configure @codenameryuu/adonis-lucid-filter
 ```
 
-## Usage
-
-- Register the provider and commands inside `adonisrc.ts` file.
+* Make sure to register the provider inside `adonisrc.ts` file.
 
 ```typescript
 providers: [
@@ -86,65 +34,71 @@ commands: [
 ]
 ```
 
-### Generating The Filter
-
-> Only available if you have added `@codenameryuu/adonis-lucid-filter/commands` in `commands` array in your `adonisrc.ts'
+## Usage
 
 You can create a model filter with the following ace command:
 
 ```bash
-node ace make:filter user
+node ace make:filter product
 ```
 
-Where `user` is the Lucid Model you are creating the filter for. This will create `app/models/filters/user_filter.js`
+Where `product` is the Lucid Model you are creating the filter for. This will create `app/models/filters/product_filter.ts`
 
 ### Defining The Filter Logic
 
 Define the filter logic based on the camel cased input key passed to the `filter()` method.
 
-- Empty strings are ignored
-- `setup()` will be called regardless of input
-- `_id` is dropped from the end of the input to define the method so filtering `user_id` would use the `user()` method
-- Input without a corresponding filter method are ignored
-- The value of the key is injected into the method
-- All values are accessible through the `this.$input` a property
-- All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
+* Empty strings are ignored
+* `setup()` will be called regardless of input
+* `_id` is dropped from the end of the input to define the method so filtering `product_id` would use the `product()` method
+* Input without a corresponding filter method are ignored
+* The value of the key is injected into the method
+* All values are accessible through the `this.$input` a property
+* All QueryBuilder methods are accessible in `this.$query` object in the model filter class.
 
 To define methods for the following input:
 
 ```json
 {
-  "companyId": 5,
-  "name": "Tony",
-  "mobilePhone": "888555"
+  "productCategoryId": 1,
+  "name": "Car",
+  "price": 100000
 }
 ```
 
 You would use the following methods:
 
 ```typescript
-import { BaseModelFilter } from 'adonis-lucid-filter'
+import { BaseModelFilter } from '@codenameryuu/adonis-lucid-filter'
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
-import User from '#models/user'
+import Product from '#models/product'
 
-export default class UserFilter extends BaseModelFilter {
-  declare $query: ModelQueryBuilderContract<typeof User>
+export default class ProductFilter extends BaseModelFilter {
+  declare $query: ModelQueryBuilderContract<typeof Product>
 
+  // Blacklisted methods
   static blacklist: string[] = ['secretMethod']
 
-  // This will filter 'companyId', 'company_id' OR 'company'
-  company(id: number) {
-    this.$query.where('company_id', id)
+  // Dropped `_id` from the end of the input
+  // Doing this would allow you to have a `company()` filter method as well as a `companyId()` filter method.
+  static dropId: boolean = true
+
+  // Doing this would allow you to have a mobile_phone() filter method instead of mobilePhone().
+  // By default, mobilePhone() filter method can be called thanks to one of the following input key:
+  // mobile_phone, mobilePhone, mobile_phone_id, mobilePhoneId
+  static camelCase: boolean = true
+
+  // This will filter 'productCategoryId', 'product_category_id' OR 'productCategory'
+  productCategory(id: number) {
+    this.$query.where('product_category_id', id)
   }
 
   name(name: string) {
-    this.$query.where((builder) => {
-      builder.where('first_name', 'LIKE', `%${name}%`).orWhere('last_name', 'LIKE', `%${name}%`)
-    })
+    this.$query.where('name', 'LIKE', `%${name}%`)
   }
 
-  mobilePhone(phone: string) {
-    this.$query.where('mobile_phone', 'LIKE', `${phone}%`)
+  price(price: number) {
+    this.$query.where('price', price)
   }
 
   secretMethod(secretParameter: any) {
@@ -176,33 +130,16 @@ setup($query) {
 In the example above `secretMethod()` will not be called, even if there is a `secret_method` key in the input object.
 In order to call this method it would need to be whitelisted dynamically:
 
-#### Static properties
-
-```typescript
-export default class UserFilter extends BaseModelFilter {
-  // Blacklisted methods
-  static blacklist: string[] = []
-
-  // Dropped `_id` from the end of the input
-  // Doing this would allow you to have a `company()` filter method as well as a `companyId()` filter method.
-  static dropId: boolean = true
-
-  // Doing this would allow you to have a mobile_phone() filter method instead of mobilePhone().
-  // By default, mobilePhone() filter method can be called thanks to one of the following input key:
-  // mobile_phone, mobilePhone, mobile_phone_id, mobilePhoneId
-  static camelCase: boolean = true
-}
-```
-
 ### Applying The Filter To A Model
 
 ```typescript
-import UserFilter from '#models/filters/user_filter'
 import { compose } from '@adonisjs/core/helpers'
-import { Filterable } from 'adonis-lucid-filter'
+import { Filterable } from '@codenameryuu/adonis-lucid-filter'
 
-export default class User extends compose(BaseModel, Filterable) {
-  static $filter = () => UserFilter
+import ProductFilter from '#models/filters/product_filter'
+
+export default class Product extends compose(BaseModel, Filterable) {
+  static $filter = () => ProductFilter
 
   // ...columns and props
 }
@@ -212,18 +149,17 @@ This gives you access to the `filter()` method that accepts an object of input:
 
 ```typescript
 import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
+import Product from '#models/product'
 
-export default class UsersController {
-  async index({ request }: HttpContext): Promise<User[]> {
-    return User.filter(request.qs()).exec()
+export default class ProductsController {
+  async index({ request }: HttpContext): Promise<Product[]> {
+    return Product.filter(request.all()).orderBy('created_at', 'desc')
   }
 
   // or with paginate method
 
-  async index({ request }: HttpContext): Promise<ModelPaginatorContract<User>> {
-    const { page = 1, ...input } = request.qs()
-    return User.filter(input).paginate(page, 15)
+  async index({ request }: HttpContext): Promise<ModelPaginatorContract<Product>> {
+    return Product.filter(request.all()).paginate(1, 10)
   }
 }
 ```
@@ -235,13 +171,13 @@ Defining a filter dynamically will take precedent over any other filters defined
 
 ```typescript
 import type { HttpContext } from '@adonisjs/core/http'
-import AdminFilter from '#models/filters/admin_filter'
-import UserFilter from '#models/filters/user_filter'
+import ProductFilter from '#models/filters/product_filter'
+import ProductExclusiveFilter from '#models/filters/product_exclusive_filter'
 
-export default class UsersController {
-  async index({ request, auth }: HttpContext): Promise<User[]> {
-    const filter = auth.user.isAdmin() ? AdminFilter : UserFilter
-    return User.filter(request.qs(), filter).exec()
+export default class ProductsController {
+  async index({ request, auth }: HttpContext): Promise<Product[]> {
+    const filter = auth.user.isAdmin() ? ProductFilter : ProductExclusiveFilter
+    return Product.filter(request.all(), filter).orderBy('created_at', 'desc')
   }
 }
 ```
@@ -252,25 +188,23 @@ For filtering relations of model may be use `.query().filter()` or scope `filtra
 
 ```typescript
 import type { HttpContext } from '@adonisjs/core/http'
-import User from '#models/user'
+import ProductCategory from '#models/product_category'
 
-export default class UserPostsController {
+export default class ProductCategoriesController {
   /**
-   * Get a list posts of user
-   * GET /users/:user_id/posts
+   * Get a list products of product category
+   * GET /product-categories/:product_category_id/products
    */
-  async index({ params, request }: HttpContext): Promise<Post[]> {
-    const user: User = await User.findOrFail(params.user_id)
+  async index({ params, request }: HttpContext): Promise<Product[]> {
+    const productCategory: ProductCategory = await ProductCategory.findOrFail(
+      params.product_category_id
+    )
 
-    return user
-      .related('posts')
+    return productCategory
+      .related('products')
       .query()
-      .apply((scopes) => scopes.filtration(request.qs()))
-      .exec()
-
-    // or
-
-    return user.related('posts').query().filter(request.qs()).exec()
+      .filter(request.all())
+      .orderBy('created_at', 'desc')
   }
 }
 ```
@@ -278,3 +212,7 @@ export default class UserPostsController {
 Documentation by [Query Scopes](https://lucid.adonisjs.com/docs/model-query-scopes)
 
 **Note:** The relation model must be `Filterable` and `$filter` must be defined in it
+
+## License
+
+This project is [MIT](https://github.com/codenameryuu/adonis-lucid-filter/blob/master/LICENSE.md) licensed.
